@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Reading Test Quiz</title>
+  <style>
+    :root {
+      --bg: #f4f7fb;
+      --card: #ffffff;
+      --primary: #1e3a8a;
+      --secondary: #e0e7ff;
+      --success: #166534;
+      --danger: #991b1b;
+      --text: #1f2937;
+      --muted: #6b7280;
+      --border: #dbe3f0;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    .wrap {
+      max-width: 980px;
+      margin: 30px auto;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      box-shadow: 0 10px 25px rgba(15, 23, 42, 0.06);
+      padding: 24px;
+    }
+
+    h1, h2, h3 {
+      color: var(--primary);
+      margin-top: 0;
+    }
+
+    .intro {
+      margin-bottom: 20px;
+      font-size: 15px;
+      color: var(--muted);
+    }
+
+    .section {
+      margin-top: 28px;
+      padding-top: 18px;
+      border-top: 1px solid var(--border);
+    }
+
+    .passage {
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+      margin: 12px 0 18px;
+      font-size: 15px;
+    }
+
+    .question {
+      margin: 16px 0;
+      padding: 12px 14px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: #fff;
+    }
+
+    .question p {
+      margin: 0 0 8px;
+      font-weight: 600;
+    }
+
+    .choices {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-left: 10px;
+    }
+
+    .choices label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 400;
+      color: var(--text);
+    }
+
+    input[type="radio"], input[type="text"] {
+      accent-color: var(--primary);
+    }
+
+    input[type="text"] {
+      width: 160px;
+      padding: 8px 10px;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      font-size: 15px;
+      margin-left: 8px;
+    }
+
+    .btn-row {
+      display: flex;
+      gap: 12px;
+      margin-top: 20px;
+      flex-wrap: wrap;
+    }
+
+    button {
+      border: none;
+      border-radius: 8px;
+      padding: 12px 18px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: 0.2s ease;
+    }
+
+    .submit-btn {
+      background: var(--primary);
+      color: white;
+    }
+
+    .reset-btn {
+      background: var(--secondary);
+      color: var(--primary);
+    }
+
+    button:hover {
+      opacity: 0.96;
+      transform: translateY(-1px);
+    }
+
+    #result {
+      margin-top: 22px;
+      padding: 16px;
+      border-radius: 10px;
+      font-weight: 700;
+      display: none;
+    }
+
+    .result-good {
+      display: block !important;
+      background: #ecfdf5;
+      border: 1px solid #a7f3d0;
+      color: var(--success);
+    }
+
+    .result-bad {
+      display: block !important;
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      color: var(--danger);
+    }
+
+    @media (max-width: 700px) {
+      .wrap {
+        padding: 18px 14px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Reading Test Practice</h1>
+    <div class="intro">
+      Complete all questions. For the completion items, enter only the missing letters. For multiple-choice questions, select one answer.
+    </div>
+
+    <form id="quizForm">
+      <div class="section">
+        <h2>Module 1 - 35 Questions</h2>
+
+        <h3>Task A - Complete the Words (Questions 1-10)</h3>
+        <div class="passage">
+          The university's new rooftop garden was de___ned to re___ce building heat and provide a small ha___at for pollinators. During the first year, students rec___ed the number of visiting insects and co___ed the results with data from nearby ground-level gardens. Although the rooftop space had fewer plant var___ties, it at___ted a surprising range of bees and butterflies. Researchers concluded that careful plant selec___n can compen___te for the limits of a compact urban garden.
+        </div>
+
+        <div class="question" data-key="q1">
+          <p>1. de___ned</p>
+          <input type="text" name="q1" placeholder="letters" />
+        </div>
+        <div class="question" data-key="q2">
+          <p>2. re___ce</p>
+          <input type="text" name="q2" placeholder="letters" />
+        </div>
+        <div class="question" data-key="q3">
+          <p>3. ha___at</p>
+          <input type="text" name="q3" placeholder="letters" />
+        </div>
+        <div class="question" data-key="q4">
+          <p>4. rec___ed</p>
+          <input type="text" name="q4" placeholder="letters" />
+        </div>
+        <div class="question" data-key="q5">
+          <p>5. co___ed</p>
+          <input type="text" name="q5" placeholder="letters" />
+        </div>
+        <div class="question" data-key="q6">
+          <p>6. var___ties</p>
+          <input type="text" name="q6" placeholder="letters" />
+        </div>
+        <div class="question" data-key="q7">
+          <p>7. at___ted</p>
+          <input type="text" name="q7" placeholder="letters" />
+        </div>
+        <div class="question" data-key="q8">
+          <p>8. selec___n</p>
+          <input type="text" name="q8" placeholder="letters" />
+        </div>
+        <div class="question" data-key="q9">
+          <p>9. compen___te</p>
+          <input type="text" name="q9" placeholder="letters" />
+        </div>
+
+        <h3>Task A - Complete the Words (Questions 11-20)</h3>
+        <div class="passage">
+          In many coastal reg___s, mangrove forests act as natural barri___s during storms. Their tangled roots slow moving water, trap sediment, and create shel___ed areas where young fish can develop. Scientists have also found that mangrove soils can store sub___tial amounts of carbon. Yet these forests are often cl___ed for construction or aquacul___re. Recent res___ation projects suggest that protecting ex___ing mangroves may be more ef___cient than rebuilding them after exte___ive damage has occurred.
+        </div>
+
+        <div class="question" data-key="q10">
+          <p>10. reg___s</p>
+          <input type="text" name="q10" placeholder="letters" />
+        </div>
+        <div class="question" data-key="q11">
+          <p>11. barri___s</p>
+          <input type="text" name="q11" placeholder="letters" />
+        </div>
+        <div class="question" data-key="q12">
+          <p>12. shel___ed</p>
+          <input type="text" name="q12" placeholder="letters" />
+        </div>
+        <div class="question" data-key="q13">
+          <p>13. sub___tial</p>
+          <input type="text" name="q13" placeholder="letters" />
+        </div>
+        <div class="question" data-key="q14">
+          <p>14. cl___ed</p>
+          <input type="text" name="q14" placeholder="letters" />
+        </div>
+        <div class="question" data-key="q15">
+          <p>15. aquacul___re</p>
+          <input type="text" name="q15" placeholder="letters" />
+        </div>
+        <div class="question" data-key="q16">
+          <p>16. res___ation</p>
+          <input type="text" name="q16" placeholder="letters" />
+        </div>
+        <div class="question" data-key="q17">
+          <p>17. ex___ing</p>
+          <input type="text" name="q17" placeholder="letters" />
+        </div>
+        <div class="question" data-key="q18">
+          <p>18. ef___cient</p>
+          <input type="text" name="q18" placeholder="letters" />
+        </div>
+        <div class="question" data-key="q19">
+          <p>19. exte___ive</p>
+          <input type="text" name="q19" placeholder="letters" />
+        </div>
+
+        <h3>Task B - Read in Daily Life (Questions 20-24)</h3>
+        <div class="passage">
+          <strong>Campus Health Notice - Flu Vaccination Clinic</strong><br />
+          Walk-in appointments are available in Room 214 from 10:00 a.m. to 3:00 p.m. on Thursday. Students should bring their university ID. If you have received a vaccination elsewhere this season, you do not need another dose unless a medical professional has advised otherwise.
+        </div>
+
+        <div class="question">
+          <p>20. Who is the notice primarily for?</p>
+          <div class="choices">
+            <label><input type="radio" name="q20" value="A" /> A. Visitors to the campus</label>
+            <label><input type="radio" name="q20" value="B" /> B. Students</label>
+            <label><input type="radio" name="q20" value="C" /> C. Clinic employees</label>
+            <label><input type="radio" name="q20" value="D" /> D. Medical researchers</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <p>21. What should students bring?</p>
+          <div class="choices">
+            <label><input type="radio" name="q21" value="A" /> A. A prescription</label>
+            <label><input type="radio" name="q21" value="B" /> B. Proof of insurance</label>
+            <label><input type="radio" name="q21" value="C" /> C. University identification</label>
+            <label><input type="radio" name="q21" value="D" /> D. A completed research survey</label>
+          </div>
+        </div>
+
+        <div class="passage">
+          <strong>Message from Student Housing</strong><br />
+          The heating system in Oak Hall will be inspected on Monday afternoon. Maintenance staff may need access to bedrooms between 1:00 and 4:00 p.m. Residents who will not be present should use the online portal to authorize access. The inspection is expected to take less than twenty minutes per room.
+        </div>
+
+        <div class="question">
+          <p>22. What are residents asked to do if they will be away?</p>
+          <div class="choices">
+            <label><input type="radio" name="q22" value="A" /> A. Call the heating company</label>
+            <label><input type="radio" name="q22" value="B" /> B. Leave their room unlocked</label>
+            <label><input type="radio" name="q22" value="C" /> C. Authorize access online</label>
+            <label><input type="radio" name="q22" value="D" /> D. Move to another residence</label>
+          </div>
+        </div>
+
+        <div class="passage">
+          <strong>Library Update</strong><br />
+          Starting next week, the second floor will remain open until midnight on weekdays. The change is intended to provide more study space during the examination period. The first floor will continue to close at 10:00 p.m., and group-study rooms must still be reserved in advance.
+        </div>
+
+        <div class="question">
+          <p>23. Why is the second floor staying open later?</p>
+          <div class="choices">
+            <label><input type="radio" name="q23" value="A" /> A. A renovation is underway</label>
+            <label><input type="radio" name="q23" value="B" /> B. More study space is needed</label>
+            <label><input type="radio" name="q23" value="C" /> C. The first floor will be closed</label>
+            <label><input type="radio" name="q23" value="D" /> D. Students requested new furniture</label>
+          </div>
+        </div>
+
+        <div class="passage">
+          <strong>Club Announcement</strong><br />
+          The Environmental Society has moved its weekly meeting from Wednesday to Tuesday because the usual room is being used for a guest lecture. The meeting will still begin at 5:30 p.m. Members who cannot attend may submit questions through the club's discussion board.
+        </div>
+
+        <div class="question">
+          <p>24. What changed?</p>
+          <div class="choices">
+            <label><input type="radio" name="q24" value="A" /> A. The meeting room and time</label>
+            <label><input type="radio" name="q24" value="B" /> B. The meeting day</label>
+            <label><input type="radio" name="q24" value="C" /> C. The club's discussion board</label>
+            <label><input type="radio" name="q24" value="D" /> D. The topic of the meeting</label>
+          </div>
+        </div>
+
+        <h3>Task C - Read an Academic Passage (Questions 25-34)</h3>
+        <div class="passage">
+          <strong>BIOLOGY: Why Some Seeds Remain Dormant</strong><br />
+          Many plants produce seeds that do not germinate immediately after they mature. This condition, known as seed dormancy, can appear to be inefficient because a dormant seed does not produce a new plant at once. However, dormancy can protect a species when environmental conditions are temporarily unsuitable. A seed may remain inactive until temperature, moisture, or light reaches a level favorable for growth.<br /><br />
+          Dormancy also changes the timing of competition. If every seed germinated as soon as it became mature, a sudden period of drought could eliminate a large group of seedlings at the same time. By spreading germination across different seasons or years, a plant population reduces the risk that one unfavorable period will affect every new individual. Some seeds therefore remain dormant for several years.<br /><br />
+          Scientists distinguish between forms of dormancy. In physical dormancy, a hard seed coat prevents water from entering. In physiological dormancy, chemical conditions inside the seed inhibit growth. Some species combine these mechanisms. Researchers study such differences because agricultural crops with predictable germination are easier to manage, while wild plants may benefit from more variable timing. Thus, dormancy should not be viewed simply as delayed growth; it is a strategy that can improve survival in uncertain environments.
+        </div>
+
+        <div class="question">
+          <p>25. What is the main purpose of the passage?</p>
+          <div class="choices">
+            <label><input type="radio" name="q25" value="A" /> A. To describe how farmers can eliminate seed dormancy</label>
+            <label><input type="radio" name="q25" value="B" /> B. To explain why seed dormancy can help plants survive</label>
+            <label><input type="radio" name="q25" value="C" /> C. To compare seeds with seedlings</label>
+            <label><input type="radio" name="q25" value="D" /> D. To show that all dormant seeds are physically protected</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <p>26. According to paragraph 2, what is one advantage of spreading germination over time?</p>
+          <div class="choices">
+            <label><input type="radio" name="q26" value="A" /> A. It increases the size of each seed</label>
+            <label><input type="radio" name="q26" value="B" /> B. It prevents all seedlings from being exposed to drought at once</label>
+            <label><input type="radio" name="q26" value="C" /> C. It removes competition among plants</label>
+            <label><input type="radio" name="q26" value="D" /> D. It guarantees that every seed germinates</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <p>27. The word 'inhibit' in paragraph 3 is closest in meaning to</p>
+          <div class="choices">
+            <label><input type="radio" name="q27" value="A" /> A. encourage</label>
+            <label><input type="radio" name="q27" value="B" /> B. measure</label>
+            <label><input type="radio" name="q27" value="C" /> C. prevent</label>
+            <label><input type="radio" name="q27" value="D" /> D. observe</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <p>28. Why does the author mention agricultural crops?</p>
+          <div class="choices">
+            <label><input type="radio" name="q28" value="A" /> A. To show that predictable germination can be useful in farming</label>
+            <label><input type="radio" name="q28" value="B" /> B. To argue that wild plants are easier to manage</label>
+            <label><input type="radio" name="q28" value="C" /> C. To explain how hard seed coats form</label>
+            <label><input type="radio" name="q28" value="D" /> D. To suggest that crops never experience dormancy</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <p>29. Which statement can be inferred about seed dormancy?</p>
+          <div class="choices">
+            <label><input type="radio" name="q29" value="A" /> A. It always results from lack of sunlight</label>
+            <label><input type="radio" name="q29" value="B" /> B. It may involve more than one biological mechanism</label>
+            <label><input type="radio" name="q29" value="C" /> C. It is unique to plants in dry climates</label>
+            <label><input type="radio" name="q29" value="D" /> D. It prevents seeds from surviving for several years</label>
+          </div>
+        </div>
+
+        <div class="passage">
+          <strong>HISTORY: Markets and the Growth of Medieval Towns</strong><br />
+          In medieval Europe, markets were more than places where goods were exchanged. Regular markets created predictable opportunities for farmers, artisans, and traveling merchants to meet. As these gatherings became more frequent, settlements near market sites could attract permanent shops and workshops. Over time, some small settlements developed into towns with more specialized economic activity.<br /><br />
+          The growth of a market did not automatically guarantee urban expansion. Roads, political protection, and access to water were also important. A market located on a difficult-to-reach hill, for example, might attract fewer traders than one situated near a river crossing. Local rulers sometimes encouraged markets because they could collect fees from commerce, but those same rulers also had to maintain order and protect traders.<br /><br />
+          Markets therefore influenced town development through several connected processes. They increased the frequency of economic interaction, encouraged specialization, and could attract people who provided services to merchants. Yet their effects depended on geography and political conditions. The development of a town was usually the result of several reinforcing factors rather than a single economic event.
+        </div>
+
+        <div class="question">
+          <p>30. According to the passage, why were regular markets important?</p>
+          <div class="choices">
+            <label><input type="radio" name="q30" value="A" /> A. They replaced all agricultural activity</label>
+            <label><input type="radio" name="q30" value="B" /> B. They created recurring opportunities for economic exchange</label>
+            <label><input type="radio" name="q30" value="C" /> C. They guaranteed political protection</label>
+            <label><input type="radio" name="q30" value="D" /> D. They prevented towns from specializing</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <p>31. Why does the author mention a hill and a river crossing?</p>
+          <div class="choices">
+            <label><input type="radio" name="q31" value="A" /> A. To illustrate how geography could affect market success</label>
+            <label><input type="radio" name="q31" value="B" /> B. To compare two medieval political systems</label>
+            <label><input type="radio" name="q31" value="C" /> C. To describe how merchants traveled by boat</label>
+            <label><input type="radio" name="q31" value="D" /> D. To explain why markets were usually built uphill</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <p>32. The word 'reinforcing' in paragraph 3 is closest in meaning to</p>
+          <div class="choices">
+            <label><input type="radio" name="q32" value="A" /> A. weakening one another</label>
+            <label><input type="radio" name="q32" value="B" /> B. working together to strengthen an effect</label>
+            <label><input type="radio" name="q32" value="C" /> C. occurring at random</label>
+            <label><input type="radio" name="q32" value="D" /> D. replacing older traditions</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <p>33. What did local rulers sometimes gain from markets?</p>
+          <div class="choices">
+            <label><input type="radio" name="q33" value="A" /> A. Free transportation</label>
+            <label><input type="radio" name="q33" value="B" /> B. Fees from commercial activity</label>
+            <label><input type="radio" name="q33" value="C" /> C. Control of agricultural production</label>
+            <label><input type="radio" name="q33" value="D" /> D. Permanent ownership of shops</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <p>34. What can be inferred about town development?</p>
+          <div class="choices">
+            <label><input type="radio" name="q34" value="A" /> A. A market alone was usually sufficient</label>
+            <label><input type="radio" name="q34" value="B" /> B. Economic growth was unrelated to geography</label>
+            <label><input type="radio" name="q34" value="C" /> C. Several conditions often combined to support growth</label>
+            <label><input type="radio" name="q34" value="D" /> D. Political protection mattered only after towns were large</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>Module 2 - 15 Questions</h2>
+
+        <h3>Task A - Complete the Words (Questions 1-10)</h3>
+        <div class="passage">
+          The university mu___um recently opened a small exh___it on the history of navig___ion. Early sailors depended on obser___tions of the stars, coastal landmarks, and seas___al winds. Over time, instr___ents such as the co___ass and the astro___be made it easier to determine direc___ion and estimate position. The exh___it also explains how printed charts grad___ally replaced hand-drawn maps and allowed information to be shared more widely.
+        </div>
+
+        <div class="question" data-key="q35">
+          <p>35. mu___um</p>
+          <input type="text" name="q35" placeholder="letters" />
+        </div>
+        <div class="question" data-key="q36">
+          <p>36. exh___it</p>
+          <input type="text" name="q36" placeholder="letters" />
+        </div>
+        <div class="question" data-key="q37">
+          <p>37. navig___ion</p>
+          <input type="text" name="q37" placeholder="letters" />
+        </div>
+        <div class="question" data-key="q38">
+          <p>38. obser___tions</p>
+          <input type="text" name="q38" placeholder="letters" />
+        </div>
+        <div class="question" data-key="q39">
+          <p>39. seas___al</p>
+          <input type="text" name="q39" placeholder="letters" />
+        </div>
+        <div class="question" data-key="q40">
+          <p>40. instr___ents</p>
+          <input type="text" name="q40" placeholder="letters" />
+        </div>
+        <div class="question" data-key="q41">
+          <p>41. co___ass</p>
+          <input type="text" name="q41" placeholder="letters" />
+        </div>
+        <div class="question" data-key="q42">
+          <p>42. astro___be</p>
+          <input type="text" name="q42" placeholder="letters" />
+        </div>
+        <div class="question" data-key="q43">
+          <p>43. direc___ion</p>
+          <input type="text" name="q43" placeholder="letters" />
+        </div>
+        <div class="question" data-key="q44">
+          <p>44. grad___ally</p>
+          <input type="text" name="q44" placeholder="letters" />
+        </div>
+
+        <h3>Task C - Read an Academic Passage (Questions 45-49)</h3>
+        <div class="passage">
+          <strong>ENVIRONMENTAL SCIENCE: Urban Trees and Heat</strong><br />
+          Cities often experience higher temperatures than nearby rural areas, a pattern commonly called the urban heat island effect. Buildings and paved surfaces absorb solar energy during the day and release it slowly after sunset. Trees can modify this pattern in several ways. Their leaves provide shade, while water released through transpiration can cool the surrounding air.<br /><br />
+          However, the cooling effect of urban trees depends on location and maintenance. A tree planted where tall buildings block sunlight may grow slowly and provide limited shade. Trees that are not watered during extended droughts may also lose leaves, reducing their cooling contribution. In addition, the benefits of a tree are not distributed evenly across a city. Neighborhoods with fewer mature trees may remain substantially warmer.<br /><br />
+          For these reasons, urban forestry programs increasingly focus on strategic placement rather than simply counting the number of trees planted. Researchers may combine temperature measurements with information about street design, building height, and tree canopy. The goal is to identify locations where new vegetation is most likely to reduce heat exposure for residents.
+        </div>
+
+        <div class="question">
+          <p>45. What is the passage mainly about?</p>
+          <div class="choices">
+            <label><input type="radio" name="q45" value="A" /> A. How rural areas are becoming cities</label>
+            <label><input type="radio" name="q45" value="B" /> B. Why urban trees can reduce heat and why placement matters</label>
+            <label><input type="radio" name="q45" value="C" /> C. Why trees grow faster in cities than in rural areas</label>
+            <label><input type="radio" name="q45" value="D" /> D. How buildings are designed to store solar energy</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <p>46. According to paragraph 2, why may a tree near tall buildings provide limited cooling?</p>
+          <div class="choices">
+            <label><input type="radio" name="q46" value="A" /> A. It receives less sunlight</label>
+            <label><input type="radio" name="q46" value="B" /> B. It produces too much water</label>
+            <label><input type="radio" name="q46" value="C" /> C. Its roots cannot reach pavement</label>
+            <label><input type="radio" name="q46" value="D" /> D. It always loses its leaves</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <p>47. The word 'strategic' in paragraph 3 is closest in meaning to</p>
+          <div class="choices">
+            <label><input type="radio" name="q47" value="A" /> A. carefully planned</label>
+            <label><input type="radio" name="q47" value="B" /> B. temporary</label>
+            <label><input type="radio" name="q47" value="C" /> C. expensive</label>
+            <label><input type="radio" name="q47" value="D" /> D. unusual</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <p>48. Why do researchers combine temperature measurements with information about street design?</p>
+          <div class="choices">
+            <label><input type="radio" name="q48" value="A" /> A. To determine where trees are likely to be most effective</label>
+            <label><input type="radio" name="q48" value="B" /> B. To estimate the age of urban buildings</label>
+            <label><input type="radio" name="q48" value="C" /> C. To identify neighborhoods with no residents</label>
+            <label><input type="radio" name="q48" value="D" /> D. To calculate how much rainfall a city receives</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <p>49. What does the passage imply about tree-planting programs?</p>
+          <div class="choices">
+            <label><input type="radio" name="q49" value="A" /> A. Planting more trees everywhere automatically produces equal benefits</label>
+            <label><input type="radio" name="q49" value="B" /> B. The effectiveness of trees can vary across a city</label>
+            <label><input type="radio" name="q49" value="C" /> C. Trees are rarely useful during summer</label>
+            <label><input type="radio" name="q49" value="D" /> D. Maintenance is less important than tree species</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button type="submit" class="submit-btn">Submit Answers</button>
+        <button type="button" class="reset-btn" id="resetBtn">Reset</button>
+      </div>
+    </form>
+
+    <div id="result"></div>
+  </div>
+
+  <script>
+    const answerKey = {
+      q1: 'sig', q2: 'duc', q3: 'bit', q4: 'ord', q5: 'ol', q6: 'iet', q7: 'rac', q8: 'ct', q9: 'sate',
+      q10: 'ion', q11: 'ers', q12: 'ter', q13: 'stan', q14: 'ear', q15: 'ture', q16: 'tor', q17: 'ist', q18: 'fic', q19: 'ns',
+      q20: 'B', q21: 'C', q22: 'C', q23: 'B', q24: 'B',
+      q25: 'B', q26: 'B', q27: 'C', q28: 'A', q29: 'B', q30: 'B', q31: 'A', q32: 'B', q33: 'B', q34: 'C',
+      q35: 'se', q36: 'ib', q37: 'ati', q38: 'vat', q39: 'on', q40: 'ume', q41: 'mp', q42: 'lab', q43: 't', q44: 'ua',
+      q45: 'B', q46: 'A', q47: 'A', q48: 'A', q49: 'B'
+    };
+
+    const form = document.getElementById('quizForm');
+    const result = document.getElementById('result');
+
+    form.addEventListener('submit', function (event) {
+      event.preventDefault();
+
+      let correct = 0;
+      let total = 0;
+
+      Object.keys(answerKey).forEach((key) => {
+        total += 1;
+
+        const field = form.elements[key];
+
+        if (!field) return;
+
+        // For text inputs, check trimmed and lowercase
+        if (field.type === 'text') {
+          const userValue = (field.value || '').trim().toLowerCase();
+          const expected = String(answerKey[key]).toLowerCase();
+          if (userValue === expected) correct += 1;
+          return;
+        }
+
+        // For radio inputs, check selected value
+        const selected = form.querySelectorAll(`input[name="${key}"]:checked`);
+        if (selected.length > 0 && selected[0].value === answerKey[key]) {
+          correct += 1;
+        }
+      });
+
+      const percentage = Math.round((correct / total) * 100);
+      result.className = percentage >= 70 ? 'result-good' : 'result-bad';
+      result.innerHTML = `Your score: ${correct}/${total} (${percentage}%)` +
+        (percentage >= 70 ? ' Excellent work!' : ' Keep practicing and try again.');
+      result.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    });
+
+    document.getElementById('resetBtn').addEventListener('click', function () {
+      form.reset();
+      result.className = '';
+      result.style.display = 'none';
+      result.innerHTML = '';
+    });
+  </script>
+</body>
+</html>
