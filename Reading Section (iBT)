@@ -288,7 +288,7 @@
                 type: 'FILL',
                 taskTitle: 'Task A - Complete the Words (Questions 1-10)',
                 instructions: 'Complete the missing letters in the words shown by underscores.',
-                passage: `The university mu <input type="text" data-q="1" class="fill-input w-10" maxlength="2"> um recently opened a small exh <input type="text" data-q="2" class="fill-input w-10" maxlength="2"> it on the history of navig <input type="text" data-q="3" class="fill-input w-10" maxlength="2"> ion. Early sailors depended on obser <input type="text" data-q="4" class="fill-input w-10" maxlength="2"> tions of the stars, coastal landmarks, and seas <input type="text" data-q="5" class="fill-input w-10" maxlength="2"> al winds. Over time, instr <input type="text" data-q="6" class="fill-input w-10" maxlength="2"> ents such as the co <input type="text" data-q="7" class="fill-input w-10" maxlength="2"> ass and the astro <input type="text" data-q="8" class="fill-input w-10" maxlength="2"> be made it easier to determine direc <input type="text" data-q="9" class="fill-input w-8" maxlength="1"> ion and estimate position. The exh__it also explains how printed charts grad <input type="text" data-q="10" class="fill-input w-8" maxlength="1"> ually replaced hand-drawn maps and allowed information to be shared more widely.`,
+                passage: `The university mu <input type="text" data-q="1" class="fill-input w-10" maxlength="2"> um recently opened a small exh <input type="text" data-q="2" class="fill-input w-10" maxlength="2"> it on the history of navig <input type="text" data-q="3" class="fill-input w-10" maxlength="2"> ion. Early sailors depended on obser <input type="text" data-q="4" class="fill-input w-10" maxlength="2"> tions of the stars, coastal landmarks, and seas <input type="text" data-q="5" class="fill-input w-10" maxlength="2"> al winds. Over time, instr <input type="text" data-q="6" class="fill-input w-10" maxlength="2"> ents such as the co <input type="text" data-q="7" class="fill-input w-10" maxlength="2"> ass and the astro <input type="text" data-q="8" class="fill-input w-10" maxlength="2"> be made it easier to determine direc <input type="text" data-q="9" class="fill-input w-8" maxlength="1"> ion and estimate position. The exh__it also explains how printed charts grad <input type="text" data-q="10" class="fill-input w-8" maxlength="1"> ally replaced hand-drawn maps and allowed information to be shared more widely.`,
                 targetQ: 1,
                 targetWord: 'museum',
                 hint: '1. mu _ _ um'
@@ -301,7 +301,7 @@
             { id: 7, type: 'FILL_GROUP', targetQ: 7, hint: '7. co _ _ ass', refGroup: 1 },
             { id: 8, type: 'FILL_GROUP', targetQ: 8, hint: '8. astro _ _ be', refGroup: 1 },
             { id: 9, type: 'FILL_GROUP', targetQ: 9, hint: '9. direc _ ion', refGroup: 1 },
-            { id: 10, type: 'FILL_GROUP', targetQ: 10, hint: '10. grad _ ally', refGroup: 1 },
+            { id: 10, type: 'FILL_GROUP', targetQ: 10, hint: '10. grad _ lly', refGroup: 1 },
 
             // Questions 11-15 Task C Urban Trees and Heat
             {
