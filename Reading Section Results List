@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teacher Dashboard - Real-time Test Results</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Georgia&family=Inter:wght@400;500;600;700&display=swap');
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background-color: #e6e2d8;
+            color: #2d3748;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+        }
+
+        .serif-title {
+            font-family: 'Georgia', serif;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #e6e2d8;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e0;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #a0aec0;
+        }
+    </style>
+</head>
+<body class="p-3 sm:p-6 md:p-8">
+
+    <!-- Header -->
+    <div class="max-w-7xl mx-auto space-y-6">
+        <header class="bg-[#1e3a5f] text-white p-6 rounded-lg shadow-md flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+            <div>
+                <h1 class="text-2xl md:text-3xl font-bold tracking-wide serif-title">Reading Section</h1>
+                <p class="text-xs md:text-sm text-gray-200 mt-1">Live Student Submissions & Real-Time Analytics</p>
+            </div>
+            <div class="flex items-center space-x-2 bg-[#172c48] px-3.5 py-1.5 rounded-full border border-blue-300/30 text-xs font-semibold">
+                <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                <span class="text-gray-100" id="live-status">Connecting to Live DB...</span>
+            </div>
+        </header>
+
+        <!-- Summary Metric Cards -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div class="bg-white p-5 rounded-lg border border-gray-200/80 shadow-sm flex flex-col justify-between">
+                <div class="text-xs font-bold text-gray-500 uppercase tracking-wider">Total Test Takers</div>
+                <div class="text-3xl font-bold text-[#1e3a5f] mt-2" id="stat-total">0</div>
+                <div class="text-xs text-gray-400 mt-1">Total completed submissions</div>
+            </div>
+            <div class="bg-white p-5 rounded-lg border border-gray-200/80 shadow-sm flex flex-col justify-between">
+                <div class="text-xs font-bold text-gray-500 uppercase tracking-wider">Average Total Score</div>
+                <div class="text-3xl font-bold text-[#2b4c7e] mt-2" id="stat-avg">0.0 <span class="text-sm font-normal text-gray-500">/ 50</span></div>
+                <div class="text-xs text-gray-400 mt-1">Mean performance across test</div>
+            </div>
+            <div class="bg-white p-5 rounded-lg border border-gray-200/80 shadow-sm flex flex-col justify-between">
+                <div class="text-xs font-bold text-gray-500 uppercase tracking-wider">Highest Score</div>
+                <div class="text-3xl font-bold text-emerald-600 mt-2" id="stat-high">0 <span class="text-sm font-normal text-gray-500">/ 50</span></div>
+                <div class="text-xs text-gray-400 mt-1">Best overall score</div>
+            </div>
+            <div class="bg-white p-5 rounded-lg border border-gray-200/80 shadow-sm flex flex-col justify-between">
+                <div class="text-xs font-bold text-gray-500 uppercase tracking-wider">Last Submission</div>
+                <div class="text-sm font-semibold text-gray-800 mt-2 truncate" id="stat-recent">No entries yet</div>
+                <div class="text-xs text-gray-400 mt-1" id="stat-recent-time">Waiting for data...</div>
+            </div>
+        </div>
+
+        <!-- Controls & Filters -->
+        <div class="bg-white p-4 rounded-lg border border-gray-200/80 shadow-sm flex flex-col sm:flex-row justify-between items-center gap-4">
+            <div class="relative w-full sm:w-80">
+                <input type="text" id="search-input" placeholder="Search by student name or email..." class="w-full pl-9 pr-4 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:border-[#1e3a5f]">
+                <svg class="w-4 h-4 text-gray-400 absolute left-3 top-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+            </div>
+            <div class="flex items-center space-x-3 w-full sm:w-auto justify-end">
+                <button id="add-demo-btn" class="text-xs bg-amber-600 hover:bg-amber-700 text-white font-medium px-4 py-2 rounded transition-colors flex items-center gap-1.5">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                    Add Demo Entry
+                </button>
+                <button id="export-csv-btn" class="text-xs bg-[#2b4c7e] hover:bg-[#1e3a5f] text-white font-medium px-4 py-2 rounded transition-colors">
+                    Export to CSV
+                </button>
+            </div>
+        </div>
+
+        <!-- Live Submissions Data Table -->
+        <div class="bg-white rounded-lg border border-gray-200/80 shadow-sm overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse text-sm">
+                    <thead>
+                        <tr class="bg-[#f2ebd9] text-[#785b12] font-semibold border-b border-amber-200/80 text-xs uppercase tracking-wider">
+                            <th class="py-3 px-4">Student Name</th>
+                            <th class="py-3 px-4">Email</th>
+                            <th class="py-3 px-4 text-center">Module 1 Score</th>
+                            <th class="py-3 px-4 text-center">Module 2 Score</th>
+                            <th class="py-3 px-4 text-center">Total Score</th>
+                            <th class="py-3 px-4">Submitted At</th>
+                            <th class="py-3 px-4 text-center">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="submissions-tbody" class="divide-y divide-gray-100">
+                        <tr>
+                            <td colspan="7" class="py-12 text-center text-gray-400 italic">
+                                Loading student responses...
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase Script & App Logic -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, setPersistence, inMemoryPersistence } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, onSnapshot, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // Global context variables provided by the canvas environment
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'ibt-reading-test';
+        const firebaseConfig = typeof __firebase_config !== 'undefined' 
+            ? JSON.parse(__firebase_config) 
+            : {
+                apiKey: "demo-key",
+                authDomain: "demo.firebaseapp.com",
+                projectId: "demo-project",
+                storageBucket: "demo.appspot.com",
+                messagingSenderId: "000000000000",
+                appId: "1:000000000000:web:000000000000"
+            };
+
+        // Initialize Firebase SDK
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        let currentSubmissions = [];
+
+        async function initDashboard() {
+            try {
+                // Ensure in-memory persistence so cross-origin iframe storage restrictions in Google Sites do not block auth
+                try {
+                    await setPersistence(auth, inMemoryPersistence);
+                } catch (pErr) {
+                    console.warn("Could not set inMemoryPersistence, attempting auth anyway:", pErr);
+                }
+
+                // Attempt custom token authentication with automatic anonymous fallback
+                let authenticated = false;
+                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                    try {
+                        await signInWithCustomToken(auth, __initial_auth_token);
+                        authenticated = true;
+                    } catch (customTokenErr) {
+                        console.warn("Custom token auth failed in embedded frame, falling back to anonymous auth:", customTokenErr);
+                    }
+                }
+
+                if (!authenticated) {
+                    await signInAnonymously(auth);
+                }
+
+                document.getElementById('live-status').textContent = 'Live Realtime Sync Active';
+
+                // Path Rule 1: /artifacts/{appId}/public/data/submissions
+                const publicDataRef = collection(db, 'artifacts', appId, 'public', 'data', 'submissions');
+
+                // Rule 2: Simple query without complex filtering/ordering
+                onSnapshot(publicDataRef, (snapshot) => {
+                    currentSubmissions = [];
+                    snapshot.forEach((doc) => {
+                        currentSubmissions.push({ id: doc.id, ...doc.data() });
+                    });
+
+                    // Sort in memory (newest first)
+                    currentSubmissions.sort((a, b) => {
+                        const timeA = a.submittedAt?.seconds || 0;
+                        const timeB = b.submittedAt?.seconds || 0;
+                        return timeB - timeA;
+                    });
+
+                    renderDashboard();
+                }, (error) => {
+                    console.error("Firestore error:", error);
+                    document.getElementById('live-status').textContent = 'Sync Error';
+                });
+
+            } catch (err) {
+                console.error("Auth Failed:", err);
+                const statusEl = document.getElementById('live-status');
+                if (statusEl) {
+                    statusEl.textContent = 'Auth Notice: Embedded Mode Active';
+                    statusEl.parentElement.classList.remove('bg-[#172c48]');
+                    statusEl.parentElement.classList.add('bg-amber-800');
+                }
+            }
+        }
+
+        function renderDashboard() {
+            const searchVal = document.getElementById('search-input').value.toLowerCase().trim();
+            const tbody = document.getElementById('submissions-tbody');
+
+            // Filter submissions by search term
+            const filtered = currentSubmissions.filter(item => {
+                const name = (item.studentName || '').toLowerCase();
+                const email = (item.studentEmail || '').toLowerCase();
+                return name.includes(searchVal) || email.includes(searchVal);
+            });
+
+            // Update Metric Summary Cards
+            document.getElementById('stat-total').textContent = currentSubmissions.length;
+
+            if (currentSubmissions.length > 0) {
+                const avg = currentSubmissions.reduce((acc, curr) => acc + (curr.totalScore || 0), 0) / currentSubmissions.length;
+                const highest = Math.max(...currentSubmissions.map(i => i.totalScore || 0));
+                
+                document.getElementById('stat-avg').innerHTML = `${avg.toFixed(1)} <span class="text-sm font-normal text-gray-500">/ 50</span>`;
+                document.getElementById('stat-high').innerHTML = `${highest} <span class="text-sm font-normal text-gray-500">/ 50</span>`;
+
+                const recent = currentSubmissions[0];
+                document.getElementById('stat-recent').textContent = recent.studentName || 'Anonymous';
+                
+                const recentDate = recent.submittedAt?.seconds 
+                    ? new Date(recent.submittedAt.seconds * 1000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+                    : 'Just now';
+                document.getElementById('stat-recent-time').textContent = recentDate;
+            } else {
+                document.getElementById('stat-avg').innerHTML = `0.0 <span class="text-sm font-normal text-gray-500">/ 50</span>`;
+                document.getElementById('stat-high').innerHTML = `0 <span class="text-sm font-normal text-gray-500">/ 50</span>`;
+                document.getElementById('stat-recent').textContent = 'No entries yet';
+                document.getElementById('stat-recent-time').textContent = 'Waiting for data...';
+            }
+
+            // Render Rows
+            if (filtered.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="7" class="py-8 text-center text-gray-400 italic">
+                            ${currentSubmissions.length === 0 ? 'No test submissions recorded yet.' : 'No matching students found.'}
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            tbody.innerHTML = filtered.map(item => {
+                const dateStr = item.submittedAt?.seconds 
+                    ? new Date(item.submittedAt.seconds * 1000).toLocaleString()
+                    : 'Just now';
+
+                return `
+                    <tr class="hover:bg-amber-50/40 transition-colors">
+                        <td class="py-3 px-4 font-semibold text-gray-900">${escapeHtml(item.studentName || 'N/A')}</td>
+                        <td class="py-3 px-4 text-gray-600">${escapeHtml(item.studentEmail || 'N/A')}</td>
+                        <td class="py-3 px-4 text-center font-mono font-medium">${item.m1Score ?? '-'} / 35</td>
+                        <td class="py-3 px-4 text-center font-mono font-medium">${item.m2Score ?? '-'} / 15</td>
+                        <td class="py-3 px-4 text-center font-mono font-bold text-[#1e3a5f]">${item.totalScore ?? '-'} / 50</td>
+                        <td class="py-3 px-4 text-xs text-gray-500">${dateStr}</td>
+                        <td class="py-3 px-4 text-center">
+                            <span class="px-2.5 py-1 text-xs font-semibold rounded-full bg-emerald-100 text-emerald-800">
+                                Completed
+                            </span>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        // Helper functions
+        function escapeHtml(str) {
+            return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+        }
+
+        // Add Mock Entry for Testing
+        const demoBtn = document.getElementById('add-demo-btn');
+        if (demoBtn) {
+            demoBtn.addEventListener('click', async () => {
+                if (!auth.currentUser) return;
+                const publicDataRef = collection(db, 'artifacts', appId, 'public', 'data', 'submissions');
+                const demoNames = ['Siti Nurhaliza', 'Budi Santoso', 'Anisa Rahma', 'Dewi Lestari', 'Rian Ardianto'];
+                const randomName = demoNames[Math.floor(Math.random() * demoNames.length)];
+                const m1 = Math.floor(Math.random() * 10) + 25;
+                const m2 = Math.floor(Math.random() * 5) + 10;
+
+                await addDoc(publicDataRef, {
+                    studentName: randomName,
+                    studentEmail: `${randomName.toLowerCase().replace(' ', '.')}@example.com`,
+                    m1Score: m1,
+                    m2Score: m2,
+                    totalScore: m1 + m2,
+                    submittedAt: serverTimestamp()
+                });
+            });
+        }
+
+        // Search Input Filter
+        document.getElementById('search-input').addEventListener('input', renderDashboard);
+
+        // Export to CSV
+        document.getElementById('export-csv-btn').addEventListener('click', () => {
+            if (currentSubmissions.length === 0) {
+                alert('No data available to export.');
+                return;
+            }
+
+            let csvContent = "data:text/csv;charset=utf-8,Student Name,Email,Module 1 Score,Module 2 Score,Total Score,Submitted At\n";
+            currentSubmissions.forEach(item => {
+                const dateStr = item.submittedAt?.seconds ? new Date(item.submittedAt.seconds * 1000).toLocaleString() : '';
+                csvContent += `"${item.studentName || ''}","${item.studentEmail || ''}",${item.m1Score || 0},${item.m2Score || 0},${item.totalScore || 0},"${dateStr}"\n`;
+            });
+
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", `iBT_Reading_Results_${new Date().toISOString().slice(0,10)}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        });
+
+        // Initialize on Load
+        window.addEventListener('DOMContentLoaded', initDashboard);
+    </script>
+</body>
+</html>
