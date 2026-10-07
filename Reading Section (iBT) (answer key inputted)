@@ -77,27 +77,41 @@
     <!-- Main Container -->
     <main class="flex-grow flex items-center justify-center p-3 sm:p-6 md:p-10">
         <div id="app-card" class="bg-white rounded-lg shadow-sm border border-gray-200/80 w-full max-w-4xl p-6 md:p-10 my-auto min-h-[450px] flex flex-col justify-between transition-all">
-            <!-- Dynamic Content Will Be Injected Here -->
+            <!-- Dynamic Content Injected Here -->
         </div>
     </main>
 
     <script>
-        // State Management
+        const m1CorrectAnswers = {
+            1: 'sig', 2: 'du', 3: 'bit', 4: 'ord', 5: 'mpar',
+            6: 'ie', 7: 'trac', 8: 'earc', 9: 'tio', 10: 'sa',
+            11: 'ion', 12: 'er', 13: 'ter', 14: 'stan', 15: 'ear',
+            16: 'tu', 17: 'tor', 18: 'ist', 19: 'fi', 20: 'ns',
+            21: 'B', 22: 'C', 23: 'C', 24: 'B', 25: 'B',
+            26: 'B', 27: 'B', 28: 'C', 29: 'A', 30: 'B',
+            31: 'B', 32: 'A', 33: 'B', 34: 'B', 35: 'C'
+        };
+
+        const m2CorrectAnswers = {
+            1: 'se', 2: 'ib', 3: 'at', 4: 'va', 5: 'on',
+            6: 'um', 7: 'mp', 8: 'la', 9: 't', 10: 'u',
+            11: 'B', 12: 'A', 13: 'A', 14: 'A', 15: 'B'
+        };
+
         const state = {
             studentName: '',
             studentEmail: '',
-            currentStage: 'WELCOME', // WELCOME, M1_START, M1_TEST, M2_START, M2_TEST, END_PHASE_1, END_PHASE_2
+            currentStage: 'WELCOME', // WELCOME, M1_START, M1_TEST, M2_START, M2_TEST, END_PHASE_2
             m1Index: 0,
             m2Index: 0,
-            m1Answers: {}, // { qNum: answer }
+            m1Answers: {}, 
             m2Answers: {},
-            m1TimeLeft: 20 * 60, // 20 minutes in seconds
+            m1TimeLeft: 20 * 60,
             m2TimeLeft: 20 * 60,
             m1TimerInterval: null,
-            m2TimerInterval: null,
+            m2TimerInterval: null
         };
 
-        // Data Structure for Questions
         const module1Questions = [
             // Questions 1-10 Task A Rooftop Garden
             {
@@ -301,7 +315,7 @@
             { id: 7, type: 'FILL_GROUP', targetQ: 7, hint: '7. co _ _ ass', refGroup: 1 },
             { id: 8, type: 'FILL_GROUP', targetQ: 8, hint: '8. astro _ _ be', refGroup: 1 },
             { id: 9, type: 'FILL_GROUP', targetQ: 9, hint: '9. direc _ ion', refGroup: 1 },
-            { id: 10, type: 'FILL_GROUP', targetQ: 10, hint: '10. grad _ lly', refGroup: 1 },
+            { id: 10, type: 'FILL_GROUP', targetQ: 10, hint: '10. grad _ ally', refGroup: 1 },
 
             // Questions 11-15 Task C Urban Trees and Heat
             {
@@ -351,7 +365,6 @@
             }
         ];
 
-        // Core Renderer Functions
         function render() {
             const card = document.getElementById('app-card');
             const subTitle = document.getElementById('header-subtitle');
@@ -395,16 +408,20 @@
                         <!-- User Info Form -->
                         <div class="space-y-4 pt-2 max-w-md">
                             <div>
-                                <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">Your name</label>
-                                <input type="text" id="input-name" value="${state.studentName}" placeholder="e.g. Alex Kim" class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-[#1e3a5f] text-sm">
+                                <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">Your name <span class="text-rose-600">*</span></label>
+                                <input type="text" id="input-name" value="${escapeHtml(state.studentName)}" placeholder="e.g. Alex Kim" class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-[#1e3a5f] text-sm">
                             </div>
                             <div>
                                 <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">Email (optional)</label>
-                                <input type="email" id="input-email" value="${state.studentEmail}" placeholder="e.g. alex@example.com" class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-[#1e3a5f] text-sm">
+                                <input type="email" id="input-email" value="${escapeHtml(state.studentEmail)}" placeholder="e.g. alex@example.com" class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-[#1e3a5f] text-sm">
                             </div>
                         </div>
 
-                        <div class="pt-4">
+                        <div id="validation-msg" class="text-xs text-rose-600 font-medium hidden">
+                            Please enter your name to begin the test.
+                        </div>
+
+                        <div class="pt-2">
                             <button onclick="handleBeginTest()" class="bg-[#2b4c7e] hover:bg-[#1e3a5f] text-white font-medium px-6 py-2.5 rounded text-sm transition-colors shadow-sm">
                                 Begin Test
                             </button>
@@ -457,25 +474,6 @@
             } else if (state.currentStage === 'M2_TEST') {
                 subTitle.textContent = 'Reading Module 2';
                 renderQuestionView(module2Questions, state.m2Index, 2);
-            } else if (state.currentStage === 'END_PHASE_1') {
-                subTitle.textContent = 'Reading Section Complete';
-                updateTimerDisplay('--:--');
-                card.innerHTML = `
-                    <div class="space-y-6 max-w-xl">
-                        <h2 class="serif-title text-3xl md:text-4xl text-[#1e3a5f] font-normal">Thank You</h2>
-                        <p class="text-gray-700 text-sm md:text-base">
-                            You have completed the Reading section of the test, <span class="font-semibold">${escapeHtml(state.studentName || 'Student')}</span>.
-                        </p>
-                        <div class="bg-[#f7f4ea] border border-amber-200/70 p-4 rounded text-gray-800 text-sm">
-                            Recording your results...
-                        </div>
-                        <div class="pt-2">
-                            <button disabled class="bg-[#2b4c7e] opacity-90 text-white font-medium px-6 py-2.5 rounded text-sm cursor-wait shadow-sm">
-                                Continue to Listening Section
-                            </button>
-                        </div>
-                    </div>
-                `;
             } else if (state.currentStage === 'END_PHASE_2') {
                 subTitle.textContent = 'Reading Section Complete';
                 updateTimerDisplay('--:--');
@@ -485,9 +483,12 @@
                         <p class="text-gray-700 text-sm md:text-base">
                             You have completed the Reading section of the test, <span class="font-semibold">${escapeHtml(state.studentName || 'Student')}</span>.
                         </p>
-                        <div class="bg-emerald-50 border border-emerald-200 p-4 rounded text-emerald-800 text-sm font-medium">
-                            Your results were sent to your instructor.
+                        
+                        <div class="bg-blue-50 border border-blue-200 p-4 rounded text-[#1e3a5f] text-sm font-medium flex items-center space-x-2">
+                            <svg class="w-5 h-5 text-[#2b4c7e] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                            <span>Your responses have been saved for this session.</span>
                         </div>
+
                         <div class="pt-2">
                             <button onclick="handleListeningClick()" class="bg-[#2b4c7e] hover:bg-[#1e3a5f] text-white font-medium px-6 py-2.5 rounded text-sm transition-colors shadow-sm">
                                 Continue to Listening Section
@@ -592,11 +593,15 @@
         }
 
         function handleBeginTest() {
-            const nameVal = document.getElementById('input-name').value.trim();
-            const emailVal = document.getElementById('input-email').value.trim();
+            const nameEl = document.getElementById('input-name');
+            const emailEl = document.getElementById('input-email');
+            const msgEl = document.getElementById('validation-msg');
+
+            const nameVal = nameEl ? nameEl.value.trim() : '';
+            const emailVal = emailEl ? emailEl.value.trim() : '';
 
             if (!nameVal) {
-                alert('Please enter your name to begin the test.');
+                if (msgEl) msgEl.classList.remove('hidden');
                 return;
             }
 
@@ -692,20 +697,14 @@
 
         function finishModule2() {
             clearInterval(state.m2TimerInterval);
-            state.currentStage = 'END_PHASE_1';
+            state.currentStage = 'END_PHASE_2';
             render();
-
-            // Automatically transition to Phase 2 after 2.5 seconds
-            setTimeout(() => {
-                state.currentStage = 'END_PHASE_2';
-                render();
-            }, 2500);
         }
 
         function handleListeningClick() {
             const toast = document.createElement('div');
             toast.className = 'fixed bottom-5 right-5 bg-gray-900 text-white px-4 py-3 rounded shadow-lg text-sm transition-opacity duration-300 z-50';
-            toast.textContent = 'Reading test complete. The Listening Section is coming next!';
+            toast.textContent = 'Reading test complete. Moving to the Listening Section!';
             document.body.appendChild(toast);
             setTimeout(() => {
                 toast.style.opacity = '0';
@@ -714,13 +713,21 @@
         }
 
         function escapeHtml(str) {
+            if (!str) return '';
             return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
         }
 
-        // Initial Load
-        window.onload = function() {
+        window.handleBeginTest = handleBeginTest;
+        window.startModule1 = startModule1;
+        window.startModule2 = startModule2;
+        window.navigateQuestion = navigateQuestion;
+        window.saveAnswer = saveAnswer;
+        window.handleListeningClick = handleListeningClick;
+
+        // Initialize App on Window Load
+        window.addEventListener('DOMContentLoaded', () => {
             render();
-        };
+        });
     </script>
 </body>
 </html>
